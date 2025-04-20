@@ -2,7 +2,7 @@ import os
 import gc
 import torch
 from aiohttp import web
-from safetensors.torch import load_file
+from safetensors.torch import load_file, save_file
 from folder_paths import get_filename_list, get_full_path
 from comfy.sd import load_lora_for_models
 from comfy_extras.nodes_model_merging import save_checkpoint
@@ -66,6 +66,8 @@ class FluxBlockLoraMerger:
                 "weight": ("FLOAT", {"default": 1.0}),
                 "save_model": ("BOOLEAN", {"default": False}),
                 "save_filename": ("STRING", {"default": "flux_block_merged.safetensors"}),
+                "save_lora": ("BOOLEAN", {"default": False}),
+                "save_lora_filename": ("STRING", {"default": "filtered_lora.safetensors"}),
                 "block_prefixes": ("STRING", {"multiline": True, "default": ""})
             }
         }
@@ -75,7 +77,7 @@ class FluxBlockLoraMerger:
     FUNCTION = "merge_selected_blocks"
     CATEGORY = "flux/dev"
 
-    def merge_selected_blocks(self, unet_model, lora_path, weight, save_model, save_filename, block_prefixes):
+    def merge_selected_blocks(self, unet_model, lora_path, weight, save_model, save_filename, save_lora, save_lora_filename, block_prefixes):
         model = unet_model.clone()
         lora_path_full = get_full_path("loras", lora_path)
         lora_sd_full = load_file(lora_path_full)
@@ -135,6 +137,13 @@ class FluxBlockLoraMerger:
             )
             print(f"[SAVE] Model saved to output/{save_filename}")
 
+        if save_lora:
+            output_path = os.path.join(os.getcwd(), "output")
+            os.makedirs(output_path, exist_ok=True)
+            output_file = os.path.join(output_path, save_lora_filename)
+            save_file(merged_keys, output_file)
+            print(f"[SAVE] Filtered LoRA saved to output/{save_lora_filename}")
+
         report = f"✔️ Merged {len(merged_keys)} keys (excluded: {len(excluded_keys)}), ignored: {len(ignored_keys)}"
         return (model, report)
 
@@ -144,7 +153,7 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "FluxBlockLoraMerger": "Flux Block LoRA Merger 🧩"
+    "FluxBlockLoraMerger": "Flux Block LoRA Merger 🧹"
 }
 
 setup()
