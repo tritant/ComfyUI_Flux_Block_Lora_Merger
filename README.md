@@ -27,5 +27,6 @@ An advanced ComfyUI node that allows selective LoRA block merging into a UNet mo
 ---
 
 ## 📸 Interface Preview
-![Capture d'écran 2025-04-20 042441](https://github.com/user-attachments/assets/1c6381ea-7737-4063-9ff9-009da17b11a1)
+![Capture d'écran 2025-04-20 124620](https://github.com/user-attachments/assets/26e3d15d-4891-4771-9a7c-10f572925404)
+
 
