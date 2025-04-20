@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-flux-block-lora-merger"
-description = "Advanced LoRA merging node for ComfyUI (allows selective LoRA block merging)"
+description = "Advanced Block LoRA merging node for ComfyUI (allows selective LoRA block merging)"
 version = "1.0.0"
 license = { file = "LICENSE.txt" }
 
