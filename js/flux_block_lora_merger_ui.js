@@ -14,11 +14,10 @@ app.registerExtension({
 
             blockListWidget.inputEl.readOnly = true;
 
-            // 🔧 Ajout d'un label info flottant avec padding propre
+            // Ajout du label au-dessus du champ block_prefixes
             requestAnimationFrame(() => {
                 const input = blockListWidget.inputEl;
-                if (!input) return;
-                const container = input.parentElement;
+                const container = input?.parentElement;
                 if (!container || container.querySelector(".flux-label")) return;
 
                 const label = document.createElement("div");
@@ -36,10 +35,11 @@ app.registerExtension({
                 });
 
                 container.style.position = "relative";
-                container.style.paddingTop = "7px"; // ✅ décalage visuel propre
+                container.style.paddingTop = "7px";
                 container.appendChild(label);
             });
 
+            // Fonction utilitaire : checkbox pour chaque bloc exclus
             const addCheckbox = (block) => {
                 const name = `block:${block}`;
                 if (self.widgets.find(w => w.name === name)) return;
@@ -60,13 +60,7 @@ app.registerExtension({
                 self.onResize?.();
             };
 
-            const updateRemover = () => {
-                const lines = blockListWidget.value.split("\n").map(l => l.trim());
-                const filtered = lines.filter(l => l.startsWith("block:"));
-                remover.options.values = filtered.length ? filtered.map(l => l.replace("block:", "")) : ["none"];
-                remover.value = "none";
-            };
-
+            // Dropdown pour ajouter un bloc aux exclusions
             const selector = this.addWidget("combo", "➕ Add Block To Exclusions", "", (val) => {
                 if (!val) return;
                 const entry = `block:${val}`;
@@ -80,6 +74,7 @@ app.registerExtension({
                 }
             }, { values: [] });
 
+            // Dropdown pour supprimer un bloc de la liste
             const remover = this.addWidget("combo", "➖ Remove Block From Exclusions", "none", (val) => {
                 if (!val || val === "none") return;
                 const entry = `block:${val}`;
@@ -94,6 +89,14 @@ app.registerExtension({
                 self.onResize?.();
             }, { values: ["none"] });
 
+            const updateRemover = () => {
+                const lines = blockListWidget.value.split("\n").map(l => l.trim());
+                const filtered = lines.filter(l => l.startsWith("block:"));
+                remover.options.values = filtered.length ? filtered.map(l => l.replace("block:", "")) : ["none"];
+                remover.value = "none";
+            };
+
+            // Bouton pour tout réinitialiser
             this.addWidget("button", "🧹 Remove All Exclusions", "", () => {
                 const lines = blockListWidget.value.split("\n").map(l => l.trim());
                 const cleared = lines.filter(l => !l.startsWith("block:"));
@@ -112,11 +115,10 @@ app.registerExtension({
                 self.onResize?.();
             }, { serialize: false });
 
+            // Mise à jour des options de blocs quand une LoRA est sélectionnée
             const loraDropdown = this.widgets.find(w => w.name === "lora_path");
             if (loraDropdown) {
-                // ✅ Change le label visible du champ LoRA
-                loraDropdown.label = "📂 Select Lora file";
-
+                loraDropdown.label = "📂 Select LoRA file";
                 loraDropdown.callback = async () => {
                     const file = loraDropdown.value;
                     if (!file) return;
@@ -133,20 +135,17 @@ app.registerExtension({
                 loraDropdown.callback();
             }
 
-            // ✅ Rename weight slider
-            const weightSlider = this.widgets.find(w => w.name === "weight");
-            if (weightSlider) {
-                weightSlider.label = "⚖️ Lora Weight";
-            }
-			// ✅ Renommer le toggle "save_model"
-            const saveToggle = this.widgets.find(w => w.name === "save_model");
-            if (saveToggle) {
-                saveToggle.label = "💾 Save merged model";
-            }
-			const saveName = this.widgets.find(w => w.name === "save_filename");
-            if (saveName) {
-                saveName.label = "📝 Output filename";
-            }
+            // Renommage des champs UI
+            const rename = (name, label) => {
+                const w = this.widgets.find(w => w.name === name);
+                if (w) w.label = label;
+            };
+
+            rename("weight", "⚖️ LoRA Weight");
+            rename("save_model", "💾 Save merged model");
+            rename("save_filename", "📝 Model output filename");
+            rename("save_lora", "💾 Save filtered LoRA");
+            rename("save_lora_filename", "📝 Lora output filename");
         };
     }
 });
