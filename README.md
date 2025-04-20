@@ -16,13 +16,14 @@ An advanced ComfyUI node that allows selective LoRA block merging into a UNet mo
 
        - Reset button to clear all exclusions (🧹 Remove All Exclusions)
 
-   - 💾 Option to save the merged model (save_model)
+   - 💾 Option to save the merged model
+
+   - 💾 Option to save the lora without excluded blocks
 
    - 📂 LoRA file selection via dropdown menu
 
    - 🧠 Compatible with Flux UNet-based model in ComfyUI
 
-   - 🪄 Works dynamically, no need to manually modify .safetensors
 ---
 
 ## 📸 Interface Preview
