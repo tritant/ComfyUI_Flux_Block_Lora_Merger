@@ -34,7 +34,7 @@ def setup():
 
             blocks = set()
             for k in lora_sd:
-                if not k.startswith("lora_unet_"):
+                if not (k.startswith("lora_unet_") or k.startswith("lora_transformer_")):
                     continue
                 try:
                     parts = k.split(".")[0].split("_")
@@ -88,7 +88,7 @@ class FluxBlockLoraMerger:
         excluded_keys = {}
 
         for k, v in lora_sd_full.items():
-            if not k.startswith("lora_unet_"):
+            if not (k.startswith("lora_unet_") or k.startswith("lora_transformer_")):
                 continue
 
             try:
