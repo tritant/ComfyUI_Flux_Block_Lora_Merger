@@ -126,7 +126,7 @@ class FluxBlockLoraMerger:
             print(f"[SAVE] Saving Model {save_filename} Cleaning Vram Before")
             torch.cuda.empty_cache()
             gc.collect()
-            output_path = os.path.join(os.getcwd(), "output")
+            output_path = os.path.join(os.getcwd(), "ComfyUI\output")
             os.makedirs(output_path, exist_ok=True)
             save_checkpoint(
                 model=model,
