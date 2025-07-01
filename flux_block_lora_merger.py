@@ -138,7 +138,7 @@ class FluxBlockLoraMerger:
             print(f"[SAVE] Model saved to output/{save_filename}")
 
         if save_lora:
-            output_path = os.path.join(os.getcwd(), "output")
+            output_path = os.path.join(os.getcwd(), "ComfyUI\output")
             os.makedirs(output_path, exist_ok=True)
             output_file = os.path.join(output_path, save_lora_filename)
             save_file(merged_keys, output_file)
